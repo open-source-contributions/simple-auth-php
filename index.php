@@ -160,7 +160,7 @@ if ($action === 'login') {
             $expiredTimestamp = Carbon::parse($expiredDate)->timestamp;
             $dateTimestamp = Carbon::now()->timestamp;
 
-            if ($expiredTimestamp - $dateTimestamp <= 0) {
+            if ($expiredTimestamp < $dateTimestamp) {
                 $sql = 'delete from tokens where token = :token';
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([':token' => $token]);
