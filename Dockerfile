@@ -1,9 +1,5 @@
 # Install required packages
-FROM ubuntu:16.04
-RUN apt-get update
-RUN apt-get install -y software-properties-common
-RUN apt-get install -y python-software-properties
-RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+FROM ubuntu:18.04
 RUN apt-get update
 RUN apt-get install -y apt-transport-https apt-utils curl php7.2-cli php7.2-mysql php7.2-curl php7.2-zip php7.2-mbstring
 RUN apt-get install -y php7.2-xml php7.2-dom php7.2-xsl php7.2-json php7.2-fpm php7.2-gd nginx
