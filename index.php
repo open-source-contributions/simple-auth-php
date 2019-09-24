@@ -161,12 +161,14 @@ if ($action === 'login') {
             $dateTimestamp = Carbon::now()->timestamp;
 
             if ($expiredTimestamp < $dateTimestamp) {
-                $sql = 'delete from tokens where token = :token';
+                $sql = 'delete from tokens where token = :token and account = :account';
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([':token' => $token]);
+                $stmt->execute([':token' => $token, ':account' => $user]);
                 echo json_encode(['result' => 'Token is expired. It should be logout.']);
+                exit(0);
             } else {
                 echo json_encode(['result' => 'Token is live.']);
+                exit(0);
             }
         }
 
@@ -175,6 +177,7 @@ if ($action === 'login') {
     } catch (\Exception $e) {
         error_log($e->getMessage());
         echo json_encode(['result' => 'Connection is failed.']);
+        exit(0);
     }
 } else {
     echo json_encode(['result' => 'Invalid actions.']);

@@ -1,4 +1,5 @@
 # simple-auth-php
+[![Build Status](https://travis-ci.org/open-source-contributions/simple-auth-php.svg?branch=master)](https://travis-ci.org/open-source-contributions/simple-auth-php)
 
 ## Introduction
 
