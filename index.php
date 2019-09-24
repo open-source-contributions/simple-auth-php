@@ -28,7 +28,7 @@ if ($action === 'none') {
 if ($action === 'login') {
     $user = $_POST['user'] ?? 'none';
     $password = $_POST['password'] ?? 'none';
-    $sql = 'select account, password from energy_solid_isc where account = :account';
+    $sql = 'select account, password from accounts where account = :account';
     $dsn = sprintf("mysql:host=localhost;dbname=%s;charset=utf8mb4", $databaseName);
     $options = [
         PDO::ATTR_EMULATE_PREPARES   => false,
@@ -156,6 +156,6 @@ if ($action === 'login') {
         echo json_encode(['result' => 'Connection is failed.']);
     }
 } else {
-    echo json_encode(['result' => 'Invalid actions']);
+    echo json_encode(['result' => 'Invalid actions.']);
     exit(0);
 }
