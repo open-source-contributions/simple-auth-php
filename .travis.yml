@@ -13,8 +13,9 @@ dist: xenial
 sudo: required
 
 before_script:
-  - mysql -e 'create database simple_auth_test;'
+  - mysql -e 'create database simple_auth_test; use simple_auth_test; source energy_solid_isc.sql;'
   - cp .env.ci .env
+  - composer install -n
   - php -S localhost:5000 index.php &
 
 script:
