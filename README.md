@@ -22,7 +22,7 @@ docker build -t simple_auth_php .
 - Docker container executing
 
 ```BASH
-docker run --name=simple_auth_php -d simple_auth_php
+docker run -p 5000:80 -d simple_auth_php
 ```
 
 ## Auth API
