@@ -100,11 +100,12 @@ if ($action === 'login') {
     }
 
     try {
-        $sql = 'select count(*) from tokens where account = :account and token = :token';
+        $sql = 'select count(*) as count from tokens where account = :account and token = :token';
         $pdo = new PDO($dsn, $databaseUser, $databasePassword, $options);
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':account' => $user, ':token' => $token]);
         $result = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $result[0]['count'];
 
         if (count($result) === 0) {
             echo json_encode(['result' => 'Token is invalid.']);

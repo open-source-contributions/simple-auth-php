@@ -147,7 +147,6 @@ class IndexTest extends TestCase
 
     public function testLogoutActionOnSuccessfulLogout()
     {
-
         $client = new Client();
         $formParams = [
             'form_params' => [
