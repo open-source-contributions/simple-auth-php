@@ -107,7 +107,7 @@ if ($action === 'login') {
         $result = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
         $result = $result[0]['count'];
 
-        if (count($result) === 0) {
+        if ($result === 0) {
             echo json_encode(['result' => 'Token is invalid.']);
             exit(0);
         } else {
