@@ -96,4 +96,82 @@ class IndexTest extends TestCase
         $this->assertSame('Auth is successful.', $response['result']);
         $this->assertArrayHasKey('token', $response);
     }
+
+    public function testLogoutActionOnEmptyAccount()
+    {
+        $client = new Client();
+        $formParams = [
+            'form_params' => [
+                'action' => 'logout',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $this->assertSame('Account is missing.', $response['result']);
+    }
+
+    public function testLogoutActionOnEmptyToken()
+    {
+        $client = new Client();
+        $formParams = [
+            'form_params' => [
+                'action' => 'logout',
+                'account' => 'test',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $this->assertSame('Token is missing.', $response['result']);
+    }
+
+    public function testLogoutActionOnInvalidToken()
+    {
+        $client = new Client();
+        $formParams = [
+            'form_params' => [
+                'action' => 'logout',
+                'account' => 'test',
+                'token' => 'invalid_token',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $this->assertSame('Token is invalid.', $response['result']);
+    }
+
+    public function testLogoutActionOnSuccessfulLogout()
+    {
+
+        $client = new Client();
+        $formParams = [
+            'form_params' => [
+                'action' => 'login',
+                'account' => 'test',
+                'password' => 'test_ci',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+        $token = $response['token'];
+
+        $formParams = [
+            'form_params' => [
+                'action' => 'logout',
+                'account' => 'test',
+                'token' => $token,
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $this->assertSame('Logout is done.', $response['result']);
+    }
 }

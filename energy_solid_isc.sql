@@ -49,6 +49,7 @@ INSERT INTO `accounts` (`ID`, `account`, `password`) VALUES
 
 CREATE TABLE `tokens` (
   `ID` int(11) NOT NULL,
+  `account` varchar(15) NOT NULL,
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `expired` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

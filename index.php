@@ -57,10 +57,10 @@ if ($action === 'login') {
             $expiredDate = $expired->addDays(1)->format('Y-m-d H:m:s');
             $token = hash('sha512', $expiredDate);
 
-            $sql = 'insert into tokens(token, expired) values(:token, :expired)';
+            $sql = 'insert into tokens(token, account, expired) values(:token, :account, :expired)';
             $stmt = $pdo->prepare($sql);
 
-            $stmt->execute([':token' => $token, ':expired' => $expiredDate]);
+            $stmt->execute([':token' => $token, ':account' => $user, ':expired' => $expiredDate]);
             $result = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             echo json_encode(['result' => 'Auth is successful.', 'token' => $token]);
@@ -86,26 +86,35 @@ if ($action === 'login') {
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ];
+    $user = $_POST['account'] ?? 'none';
     $token = $_POST['token'] ?? 'none';
 
+    if ($user === 'none') {
+        echo json_encode(['result' => 'Account is missing.']);
+        exit(0);
+    }
+
     if ($token === 'none') {
-        echo json_encode(['result' => 'Logout is done.']);
+        echo json_encode(['result' => 'Token is missing.']);
+        exit(0);
     }
 
     try {
-        $sql = 'select count(*) from tokens where token = :token';
+        $sql = 'select count(*) from tokens where account = :account and token = :token';
         $pdo = new PDO($dsn, $databaseUser, $databasePassword, $options);
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([':token' => $token]);
+        $stmt->execute([':account' => $user, ':token' => $token]);
         $result = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($result) === 0) {
-            echo json_encode(['result' => 'Logout is done.']);
+            echo json_encode(['result' => 'Token is invalid.']);
+            exit(0);
         } else {
             $sql = 'delete from tokens where token = :token';
             $stmt = $pdo->prepare($sql);
             $stmt->execute([':token' => $token]);
             echo json_encode(['result' => 'Logout is done.']);
+            exit(0);
         }
 
         $stmt = null;
@@ -113,6 +122,7 @@ if ($action === 'login') {
     } catch (\Exception $e) {
         error_log($e->getMessage());
         echo json_encode(['result' => 'Connection is failed.']);
+        exit(0);
     }
 } else if ($action === 'status') {
     $dsn = sprintf("mysql:host=localhost;dbname=%s;charset=utf8mb4", $databaseName);
@@ -124,7 +134,8 @@ if ($action === 'login') {
     $token = $_POST['token'] ?? 'none';
 
     if ($token === 'none') {
-        echo json_encode(['result' => 'Logout is done.']);
+        echo json_encode(['result' => 'Token is invalid.']);
+        exit(0);
     }
 
     try {
