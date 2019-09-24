@@ -8,14 +8,7 @@ php:
 services:
   - mysql
 
-addons:
-  apt:
-    sources:
-      - mysql-5.7-trusty
-    packages:
-      - mysql-server
-
-dist: trusty
+dist: xenial
 
 sudo: required
 
