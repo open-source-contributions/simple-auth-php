@@ -39,8 +39,7 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`ID`, `account`, `password`) VALUES
-(1, 'itri', '$2y$10$9xbvZwOfbfMJSFMKgwyrZOyCdvAl7gCjONZRFvYQYVawX5CplDaa6'),
-(2, 'test', '$2y$10$9xbvZwOfbfMJSFMKgwyrZOyCdvAl7gCjONZRFvYQYVawX5CplDaa6');
+(1, 'test', '$2y$10$UkQd9wTnFSdkHDwa2FYsIOL3pVLAqhgvTga7afDbJupo8GqW21fje');
 
 -- --------------------------------------------------------
 

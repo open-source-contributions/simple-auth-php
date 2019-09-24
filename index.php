@@ -28,7 +28,7 @@ if ($action === 'none') {
 if ($action === 'login') {
     $user = $_POST['user'] ?? 'none';
     $password = $_POST['password'] ?? 'none';
-    $sql = 'select count(account) from energy_solid_isc where account = :account AND password = :password';
+    $sql = 'select account, password from energy_solid_isc where account = :account';
     $dsn = sprintf("mysql:host=localhost;dbname=%s;charset=utf8mb4", $databaseName);
     $options = [
         PDO::ATTR_EMULATE_PREPARES   => false,
@@ -42,9 +42,17 @@ if ($action === 'login') {
         $stmt->execute([':account' => $user, ':password' => $password]);
         $result = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if (count($result) === 0) {
-            echo json_encode(['result' => 'Auth is failed']);
+        if (count($result) !== 1) {
+            echo json_encode(['result' => 'Account Auth is failed.']);
+            exit(0);
         } else {
+            $hashedPassword = $result[0]['password'];
+
+            if (password_verify($password, $hashedPassword) === false) {
+                echo json_encode(['result' => 'Password Auth is failed.']);
+                exit(0);
+            }
+
             $expired = new Carbon('Asia/Taipei');
             $expiredDate = $expired->addDays(1)->format('Y-m-d H:m:s');
             $sql = 'insert into tokens(token, expired) values(:token, :expired)';
@@ -54,17 +62,20 @@ if ($action === 'login') {
 
             $token = hash('sha512', $expiredDate);
             echo json_encode(['result' => 'Auth is successful.', 'token' => $token]);
+            exit(0);
         }
 
         $stmt = null;
         $pdo = null;
     } catch (\Exception $e) {
         error_log($e->getMessage());
-        echo 'Connection is failed.';
+        echo json_encode(['result' => 'Connection is failed.']);
+        exit(0);
     }
 
     if ($user === 'none' || $password === 'none') {
-        echo 'The user or password is missing';
+        echo json_encode(['result' => 'The user or password is missing']);
+        exit(0);
     }
 } else if ($action === 'logout') {
     $dsn = sprintf("mysql:host=localhost;dbname=%s;charset=utf8mb4", $databaseName);
@@ -146,4 +157,5 @@ if ($action === 'login') {
     }
 } else {
     echo json_encode(['result' => 'Invalid actions']);
+    exit(0);
 }
