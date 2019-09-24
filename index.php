@@ -7,6 +7,7 @@ use Dotenv\Dotenv;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['result' => 'Sorry. This method is not accepted.']);
+    exit(0);
 }
 
 $dotEnv = Dotenv::create(__DIR__);
