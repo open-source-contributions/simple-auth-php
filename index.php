@@ -26,7 +26,7 @@ if ($action === 'none') {
 }
 
 if ($action === 'login') {
-    $user = $_POST['user'] ?? 'none';
+    $user = $_POST['account'] ?? 'none';
     $password = $_POST['password'] ?? 'none';
     $sql = 'select account, password from accounts where account = :account';
     $dsn = sprintf("mysql:host=localhost;dbname=%s;charset=utf8mb4", $databaseName);

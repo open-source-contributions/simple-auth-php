@@ -86,7 +86,7 @@ class IndexTest extends TestCase
             'form_params' => [
                 'action' => 'login',
                 'account' => 'test',
-                'password' => 'invalid_password',
+                'password' => 'test_ci',
             ],
         ];
         $response = $client->request('POST', 'http://localhost:5000', $formParams);
