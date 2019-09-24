@@ -264,6 +264,5 @@ class IndexTest extends TestCase
         $response = json_decode($response, true);
 
         $this->assertSame('Token is missing.', $response['result']);
-
     }
 }
