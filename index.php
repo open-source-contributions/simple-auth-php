@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Dotenv\Dotenv;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo 'Sorry. This method is not accepted.';
+    echo json_encode(['result' => 'Sorry. This method is not accepted.']);
 }
 
 $dotEnv = Dotenv::create(__DIR__);

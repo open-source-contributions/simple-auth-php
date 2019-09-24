@@ -27,6 +27,6 @@ class IndexTest extends TestCase
         $response = (string) $response->getBody();
         $response = json_decode($response, true)['result'];
 
-        $this->assertSame('', $response);
+        $this->assertSame('Sorry. The action is missing.', $response);
     }
 }
