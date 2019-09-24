@@ -55,12 +55,14 @@ if ($action === 'login') {
 
             $expired = new Carbon('Asia/Taipei');
             $expiredDate = $expired->addDays(1)->format('Y-m-d H:m:s');
+            $token = hash('sha512', $expiredDate);
+
             $sql = 'insert into tokens(token, expired) values(:token, :expired)';
             $stmt = $pdo->prepare($sql);
+
             $stmt->execute([':token' => $token, ':expired' => $expiredDate]);
             $result = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $token = hash('sha512', $expiredDate);
             echo json_encode(['result' => 'Auth is successful.', 'token' => $token]);
             exit(0);
         }
