@@ -39,7 +39,7 @@ if ($action === 'login') {
     try {
         $pdo = new PDO($dsn, $databaseUser, $databasePassword, $options);
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([':account' => $user, ':password' => $password]);
+        $stmt->execute([':account' => $user]);
         $result = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($result) !== 1) {

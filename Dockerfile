@@ -25,5 +25,5 @@ COPY ./.env.example ./
 RUN curl -sS https://getcomposer.org/installer | php
 RUN php composer.phar install -n
 
-EXPOSE 80
+EXPOSE 5000
 CMD ["bash", "-c", "service php7.2-fpm start && nginx -g 'daemon off;'"]
