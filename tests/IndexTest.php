@@ -173,4 +173,97 @@ class IndexTest extends TestCase
 
         $this->assertSame('Logout is done.', $response['result']);
     }
+
+    public function testStatusAction()
+    {
+        $client = new Client();
+        $formParams = [
+            'form_params' => [
+                'action' => 'login',
+                'account' => 'test',
+                'password' => 'test_ci',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+        $token = $response['token'];
+
+        $formParams = [
+            'form_params' => [
+                'action' => 'status',
+                'account' => 'test',
+                'token' => $token,
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $this->assertSame('Token is live.', $response['result']);
+    }
+
+    public function testStatusActionOnNonVerified()
+    {
+        $client = new Client();
+        $formParams = [
+            'form_params' => [
+                'action' => 'login',
+                'account' => 'test',
+                'password' => 'test_ci',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $formParams = [
+            'form_params' => [
+                'action' => 'status',
+                'account' => 'test',
+                'token' => 'invalid_token',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $this->assertSame('It is not verified and should run logout action.', $response['result']);
+    }
+
+    public function testStatusActionOnMissingAccount()
+    {
+        $client = new Client();
+
+        $formParams = [
+            'form_params' => [
+                'action' => 'status',
+                'token' => 'token',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $this->assertSame('Account is missing.', $response['result']);
+
+    }
+
+    public function testStatusActionOnMissingToken()
+    {
+        $client = new Client();
+
+        $formParams = [
+            'form_params' => [
+                'action' => 'status',
+                'account' => 'test',
+            ],
+        ];
+        $response = $client->request('POST', 'http://localhost:5000', $formParams);
+        $response = (string) $response->getBody();
+        $response = json_decode($response, true);
+
+        $this->assertSame('Token is missing.', $response['result']);
+
+    }
 }

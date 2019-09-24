@@ -132,22 +132,29 @@ if ($action === 'login') {
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ];
+    $user = $_POST['account'] ?? 'none';
     $token = $_POST['token'] ?? 'none';
 
+    if ($user === 'none') {
+        echo json_encode(['result' => 'Account is missing.']);
+        exit(0);
+    }
+
     if ($token === 'none') {
-        echo json_encode(['result' => 'Token is invalid.']);
+        echo json_encode(['result' => 'Token is missing.']);
         exit(0);
     }
 
     try {
-        $sql = 'select count(*) from tokens where token = :token';
+        $sql = 'select count(*) as count from tokens where token = :token and account = :account';
         $pdo = new PDO($dsn, $databaseUser, $databasePassword, $options);
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([':token' => $token]);
+        $stmt->execute([':token' => $token, ':account' => $user]);
         $result = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $result[0]['count'];
 
-        if (count($result) !== 1) {
-            echo json_encode(['result' => 'It is not verified.']);
+        if ($result === 0) {
+            echo json_encode(['result' => 'It is not verified and should run logout action.']);
         } else {
             $expiredDate = $result[0]['expired'];
             $expiredTimestamp = Carbon::parse($expiredDate)->timestamp;
