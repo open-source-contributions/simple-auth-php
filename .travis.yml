@@ -1,0 +1,28 @@
+
+language: php
+
+php:
+  - 7.2
+  - 7.3
+
+services:
+  - mysql
+
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+
+dist: trusty
+
+sudo: required
+
+before_script:
+  - mysql -e 'create database simple_auth_test;'
+  - cp .env.ci .env
+  - php -S localhost:5000 index.php &
+
+script:
+  - vendor/bin/phpunit
